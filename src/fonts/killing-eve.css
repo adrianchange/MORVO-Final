@@ -1,0 +1,11 @@
+/**
+ * Réplica de la tipografía de Killing Eve (FZ Fonts).
+ * Licencia: freeware; uso comercial requiere donación — ver public/fonts/KILLING-EVE-LICENSE.txt
+ */
+@font-face {
+  font-family: "Killing";
+  src: url("/fonts/KillingEve.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
