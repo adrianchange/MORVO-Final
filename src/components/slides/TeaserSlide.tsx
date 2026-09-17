@@ -1,6 +1,6 @@
+import type { ReactNode } from "react";
 import type { PaletteTheme } from "../../theme/palettes";
 import { hasTeaserVideo, slideText } from "../../theme/palettes";
-import { PETROLEO_SLIDE_BG } from "../../assets/petroleoPhotos";
 import { fontBody, fontDisplay } from "./slideStyles";
 import { MediaFrame, SlideShell } from "./shared";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -14,33 +14,83 @@ const TEASER_SIDE_INSET =
 /** Margen lateral en móvil: flecha (~40px) + separación */
 const MOBILE_TEASER_SIDE_INSET = "calc(12px + 40px + 12px)";
 
-function petroleoTrialBg(theme: PaletteTheme): string | undefined {
-  return theme.id === "raiz_petroleo" ? PETROLEO_SLIDE_BG : undefined;
+const ELENCO_LINES = [
+  "Javier Estevez Permuy",
+  "Ciprian Gheorghe",
+  "Adrian Popovici",
+] as const;
+
+function petroleoSlideBg(theme: PaletteTheme): string | undefined {
+  return theme.id === "raiz_petroleo" ? "#000000" : undefined;
 }
 
-function ContactBlock({
+function InstagramIcon({ color, size = 18 }: { color: string; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      style={{ flexShrink: 0, transform: "translateY(1px)" }}
+    >
+      <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke={color} strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="4.2" stroke={color} strokeWidth="1.6" />
+      <circle cx="17.4" cy="6.6" r="1.15" fill={color} />
+    </svg>
+  );
+}
+
+function InstagramHandle({
+  text,
+  handle,
+  compact = false,
+}: {
+  text: string;
+  handle: string;
+  compact?: boolean;
+}) {
+  return (
+    <>
+      <InstagramIcon color={text} size={compact ? 15 : 18} />
+      <span>{handle}</span>
+    </>
+  );
+}
+
+/** Etiquetas al estilo del título de slide, pero más pequeñas */
+function CreditBlock({
   label,
   value,
   text,
   theme,
   compact = false,
+  center = false,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   text: string;
   theme: PaletteTheme;
   compact?: boolean;
+  center?: boolean;
 }) {
   return (
-    <div style={{ marginBottom: compact ? 10 : "clamp(14px, 2vh, 22px)" }}>
+    <div
+      style={{
+        textAlign: center ? "center" : "left",
+        minWidth: 0,
+      }}
+    >
       <div
         style={{
+          margin: 0,
+          marginBottom: compact ? 4 : 6,
           fontFamily: fontDisplay(theme),
-          fontSize: compact ? 9 : "clamp(9px, 0.85vw, 11px)",
-          letterSpacing: "0.28em",
+          fontWeight: 700,
+          fontSize: compact ? 11 : "clamp(11px, 1.1vw, 15px)",
           color: text,
-          opacity: 0.55,
-          marginBottom: 3,
+          letterSpacing: "0.12em",
+          lineHeight: 1.2,
         }}
       >
         {label}
@@ -48,10 +98,16 @@ function ContactBlock({
       <div
         style={{
           fontFamily: fontBody(theme),
-          fontSize: compact ? 13 : "clamp(13px, 1.2vw, 17px)",
+          fontSize: compact ? 13 : "clamp(13px, 1.15vw, 16px)",
           color: text,
           opacity: 0.85,
           letterSpacing: "0.04em",
+          lineHeight: 1.35,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: center ? "center" : "flex-start",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         {value}
@@ -60,53 +116,130 @@ function ContactBlock({
   );
 }
 
-function SectionLabel({
-  children,
+function CreditsRow({
   theme,
   text,
   compact = false,
+  center = false,
 }: {
-  children: string;
   theme: PaletteTheme;
   text: string;
   compact?: boolean;
+  center?: boolean;
 }) {
+  const elenco = (
+    <span style={{ display: "flex", flexDirection: "column", gap: 2, lineHeight: 1.35 }}>
+      {ELENCO_LINES.map((name) => (
+        <span key={name}>{name}</span>
+      ))}
+    </span>
+  );
+
+  const fotografiaYDosier = (
+    <div style={{ display: "flex", flexDirection: "column", gap: compact ? 14 : "clamp(14px, 1.8vh, 20px)" }}>
+      <CreditBlock
+        theme={theme}
+        text={text}
+        label="Fotografía"
+        value={<InstagramHandle text={text} handle="dancruz_" compact={compact} />}
+        compact={compact}
+        center={center}
+      />
+      <CreditBlock
+        theme={theme}
+        text={text}
+        label="Dosier"
+        value="Adrian Popovici"
+        compact={compact}
+        center={center}
+      />
+    </div>
+  );
+
+  const items: { label: string; value: ReactNode; custom?: ReactNode }[] = [
+    { label: "Texto y dirección", value: "Naz Montés" },
+    {
+      label: "Producción",
+      value: (
+        <span style={{ whiteSpace: "nowrap" }}>Compañía OBSCENA TEATRAL</span>
+      ),
+    },
+    {
+      label: "Contacto",
+      value: <InstagramHandle text={text} handle="obscena.teatral" compact={compact} />,
+    },
+    { label: "Elenco", value: elenco },
+    { label: "Fotografía", value: null, custom: fotografiaYDosier },
+  ];
+
+  if (compact || center) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: compact ? 14 : "clamp(14px, 1.8vh, 20px)",
+          width: "100%",
+        }}
+      >
+        {items.map((item) =>
+          item.custom ? (
+            <div key={item.label}>{item.custom}</div>
+          ) : (
+            <CreditBlock
+              key={item.label}
+              theme={theme}
+              text={text}
+              label={item.label}
+              value={item.value}
+              compact={compact}
+              center
+            />
+          ),
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
-        fontFamily: fontDisplay(theme),
-        fontSize: compact ? 10 : "clamp(10px, 0.95vw, 12px)",
-        letterSpacing: "0.32em",
-        color: text,
-        opacity: 0.6,
-        marginBottom: compact ? 8 : "clamp(12px, 2vh, 18px)",
-        textTransform: "uppercase",
+        display: "grid",
+        gridTemplateColumns:
+          "minmax(0, 1.1fr) minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr)",
+        gap: "clamp(16px, 2vw, 28px)",
+        width: "100%",
+        alignItems: "start",
       }}
     >
-      {children}
+      {items.map((item) =>
+        item.custom ? (
+          <div key={item.label}>{item.custom}</div>
+        ) : (
+          <CreditBlock
+            key={item.label}
+            theme={theme}
+            text={text}
+            label={item.label}
+            value={item.value}
+          />
+        ),
+      )}
     </div>
   );
 }
 
 function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
-  const contactSectionStyle = {
-    display: "flex",
-    flexDirection: "column" as const,
-    alignItems: "center",
-    width: "100%",
-    textAlign: "center" as const,
-    gap: 0,
-  };
-
   return (
-    <SlideShell theme={theme} index="08" scrollable background={petroleoTrialBg(theme)}>
+    <SlideShell theme={theme} index="08" scrollable background={petroleoSlideBg(theme)}>
       <div
         style={{
           padding: `48px ${MOBILE_TEASER_SIDE_INSET} 48px`,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 24,
+          gap: 28,
         }}
       >
         <h2
@@ -128,44 +261,17 @@ function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             font={fontDisplay(theme)}
             accentColor={slideText(theme)}
             paletteId={theme.id}
-            style={{ width: "100%", maxWidth: 480, aspectRatio: "16/9" }}
+            style={{ width: "100%", maxWidth: 560, aspectRatio: "16/9" }}
           />
         ) : (
           <MediaFrame
             theme={theme}
             label="[Vídeo teaser]"
-            style={{ width: "100%", maxWidth: 480, aspectRatio: "16/9" }}
+            style={{ width: "100%", maxWidth: 560, aspectRatio: "16/9" }}
           />
         )}
 
-        <div style={contactSectionStyle}>
-          <SectionLabel theme={theme} text={text} compact>
-            Contacto
-          </SectionLabel>
-          <ContactBlock compact theme={theme} label="DIRECCIÓN" value="Naz Montés" text={text} />
-          <ContactBlock compact theme={theme} label="PRODUCCIÓN" value="Compañía OBSCENA Teatral" text={text} />
-          <ContactBlock compact theme={theme} label="CONTACTO" value="[email@compañia.com]" text={text} />
-          <ContactBlock compact theme={theme} label="WEB" value="[www.compañia.com]" text={text} />
-        </div>
-
-        <div
-          style={{
-            width: "60%",
-            maxWidth: 220,
-            height: 1,
-            background: `linear-gradient(90deg, transparent, ${text}33, transparent)`,
-          }}
-        />
-
-        <div style={contactSectionStyle}>
-          <SectionLabel theme={theme} text={text} compact>
-            Ficha técnica
-          </SectionLabel>
-          <ContactBlock compact theme={theme} label="ESPACIO" value="[Aforo / Tipo de sala]" text={text} />
-          <ContactBlock compact theme={theme} label="ESTRENO" value="[Ciudad, mes año]" text={text} />
-          <ContactBlock compact theme={theme} label="IDIOMA" value="[Idioma]" text={text} />
-          <ContactBlock compact theme={theme} label="DURACIÓN" value="[XX min sin intermedio]" text={text} />
-        </div>
+        <CreditsRow theme={theme} text={text} compact center />
       </div>
     </SlideShell>
   );
@@ -173,54 +279,51 @@ function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
 
 function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
   return (
-    <SlideShell theme={theme} index="08" background={petroleoTrialBg(theme)}>
-      <h2
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          margin: 0,
-          paddingTop: "clamp(28px, 4vh, 48px)",
-          paddingBottom: "clamp(10px, 1.5vh, 18px)",
-          textAlign: "center",
-          fontFamily: fontDisplay(theme),
-          fontWeight: 700,
-          fontSize: "clamp(20px, 2.4vw, 32px)",
-          color: text,
-          letterSpacing: "0.12em",
-        }}
-      >
-        Teaser y Contacto
-      </h2>
+    <SlideShell theme={theme} index="08" background={petroleoSlideBg(theme)}>
       <div
         style={{
           position: "absolute",
-          top: "clamp(72px, 10vh, 100px)",
+          top: 0,
           right: TEASER_SIDE_INSET,
-          bottom: "clamp(28px, 4vh, 44px)",
+          bottom: 0,
           left: TEASER_SIDE_INSET,
           display: "flex",
-          flexWrap: "wrap",
-          alignItems: "stretch",
-          alignContent: "stretch",
-          gap: "clamp(20px, 2.5vw, 56px)",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "clamp(18px, 2.4vh, 28px)",
+          paddingTop: "clamp(20px, 3vh, 32px)",
+          paddingBottom: "clamp(20px, 3vh, 32px)",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
       >
+        <h2
+          style={{
+            margin: 0,
+            flexShrink: 0,
+            textAlign: "center",
+            fontFamily: fontDisplay(theme),
+            fontWeight: 700,
+            fontSize: "clamp(20px, 2.4vw, 32px)",
+            color: text,
+            letterSpacing: "0.12em",
+          }}
+        >
+          Teaser y Contacto
+        </h2>
+
         {hasTeaserVideo(theme.id) ? (
           <TeaserVideo
             font={fontDisplay(theme)}
             accentColor={slideText(theme)}
             paletteId={theme.id}
             style={{
-              flex: "1 1 320px",
-              width: "min(100%, 42%)",
-              maxWidth: "min(100%, 520px)",
-              minWidth: 0,
+              width: "min(100%, 920px)",
+              maxHeight: "min(52vh, 520px)",
+              aspectRatio: "16/9",
+              flexShrink: 1,
               minHeight: 0,
-              alignSelf: "center",
             }}
           />
         ) : (
@@ -228,58 +331,15 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             theme={theme}
             label="[Vídeo teaser]"
             style={{
-              flex: "1 1 320px",
-              width: "min(100%, 42%)",
-              maxWidth: "min(100%, 520px)",
-              minWidth: 0,
-              minHeight: 0,
+              width: "min(100%, 920px)",
+              maxHeight: "min(52vh, 520px)",
+              aspectRatio: "16/9",
             }}
           />
         )}
-        <div
-          style={{
-            flex: "1 1 280px",
-            minWidth: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "clamp(20px, 2.5vw, 48px)",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              flex: "1 1 160px",
-              minWidth: 0,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <SectionLabel theme={theme} text={text}>
-              Contacto
-            </SectionLabel>
-            <ContactBlock theme={theme} label="DIRECCIÓN" value="Naz Montés" text={text} />
-            <ContactBlock theme={theme} label="PRODUCCIÓN" value="Compañía OBSCENA Teatral" text={text} />
-            <ContactBlock theme={theme} label="CONTACTO" value="[email@compañia.com]" text={text} />
-            <ContactBlock theme={theme} label="WEB" value="[www.compañia.com]" text={text} />
-          </div>
-          <div
-            style={{
-              flex: "1 1 160px",
-              minWidth: 0,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <SectionLabel theme={theme} text={text}>
-              Ficha técnica
-            </SectionLabel>
-            <ContactBlock theme={theme} label="ESPACIO" value="[Aforo / Tipo de sala]" text={text} />
-            <ContactBlock theme={theme} label="ESTRENO" value="[Ciudad, mes año]" text={text} />
-            <ContactBlock theme={theme} label="IDIOMA" value="[Idioma]" text={text} />
-            <ContactBlock theme={theme} label="DURACIÓN" value="[XX min sin intermedio]" text={text} />
-          </div>
+
+        <div style={{ width: "100%", maxWidth: 1100, flexShrink: 0 }}>
+          <CreditsRow theme={theme} text={text} />
         </div>
       </div>
     </SlideShell>

@@ -138,18 +138,19 @@ export function Dossier({ paletteId, onBack }: Props) {
         roleLabel: "Compañía OBSCENA TEATRAL",
         photoLabel: "[Foto del equipo]",
         hidePhoto: true,
+        backgroundUrl: isPetroleo ? PETROLEO_PHOTOS.equipo : undefined,
         description:
-          "Fundada en Barcelona en 2015 por el actor Javier Estévez, Compañía Obscena Teatral es un colectivo multidisciplinario e independiente del circuito alternativo de la ciudad. Nace como espacio de agitación cultural para debatir y cuestionar las dinámicas contemporáneas, con la mirada puesta en lo cercano: la familia, el trabajo y las normas no escritas de lo cotidiano.\nMediante un cruce de lenguajes escénicos y una firme independencia creativa, utiliza la escena como herramienta política, crítica y constructiva. Su línea artística se apoya en el absurdo y la comedia negra —incisiva y reflexiva— para destapar las contradicciones del sistema y confrontar al espectador con sus propias servidumbres.\nRepertorio: Obscena familiar, Absurda como la vida misma, Efectos secundarios, Consentidos, una comedia sin sentidos y Morvo.",
+          "Fundada en Barcelona en 2015 por el actor Javier Estévez, Compañía Obscena Teatral es un colectivo multidisciplinario e independiente del circuito alternativo de la ciudad. Nace como espacio de agitación cultural para debatir y cuestionar las dinámicas contemporáneas, con la mirada puesta en lo cercano: la familia, el trabajo y las normas no escritas de lo cotidiano.\n\nMediante un cruce de lenguajes escénicos y una firme independencia creativa, utiliza la escena como herramienta política, crítica y constructiva. Su línea artística se apoya en el absurdo y la comedia negra —incisiva y reflexiva— para destapar las contradicciones del sistema y confrontar al espectador con sus propias servidumbres.\n\nRepertorio: Obscena familiar, Absurda como la vida misma, Consentidos, Efectos secundarios y MORVO.",
       }}
     />,
     <TeaserSlide key="teaser" theme={theme} />,
   ];
 
   const text = slideText(theme);
-  /** Petróleo: negro en actores; teal (como teaser) en equipo, 02 y teaser */
-  const isActorSlide = index >= 3 && index <= 5;
+  /** Petróleo: negro en actores y teaser; teal en 02 y equipo (bajo la foto) */
+  const isBlackSlide = (index >= 3 && index <= 5) || index === 7;
   const bg = isPetroleo
-    ? isActorSlide
+    ? isBlackSlide
       ? "#000000"
       : index !== 0 && index !== 2
         ? PETROLEO_SLIDE_BG

@@ -640,8 +640,24 @@ export function CoverCreditWrap({
 }
 
 /** Encabezado superior — misma tipografía que el subtítulo «Naz Montés» */
-export function ObscenaTeatralHeader({ color }: { color: string }) {
-  const { textStyle, wrapStyle } = useCoverCreditTypography(color, { textAlign: "center" });
+export function ObscenaTeatralHeader({
+  color,
+  intensify = false,
+}: {
+  color: string;
+  /** Más presencia de color (portada Petróleo) */
+  intensify?: boolean;
+}) {
+  const { textStyle, wrapStyle } = useCoverCreditTypography(color, {
+    textAlign: "center",
+    ...(intensify
+      ? {
+          fontWeight: 600,
+          opacity: 1,
+          textShadow: `0 0 20px ${color}aa, 0 0 4px ${color}88, 0 1px 3px rgba(0,0,0,0.55)`,
+        }
+      : {}),
+  });
   return (
     <div
       style={{

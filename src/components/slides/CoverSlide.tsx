@@ -721,7 +721,10 @@ function RaizCover({ theme }: CoverSlideProps) {
         </>
       )}
       <Grain light />
-      <ObscenaTeatralHeader color={isMorvoPhotoCover ? coverAccent : fg} />
+      <ObscenaTeatralHeader
+        color={isMorvoPhotoCover ? coverAccent : fg}
+        intensify={isPetroleo}
+      />
       <div
         style={{
           position: "absolute",

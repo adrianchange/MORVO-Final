@@ -10,6 +10,8 @@ export const PETROLEO_PHOTOS = {
   /** Vista 02 — foto frontal (contain) */
   portadaFlyerFront: "/images/petroleo/Portadaposible.jpg",
   sinopsis: "/images/petroleo/Sinopsis1.jpg",
+  /** Vista equipo — fondo */
+  equipo: "/images/petroleo/EquipoFondo.png",
 } as const;
 
 /** Fondo compartido Petróleo — vistas 02, 04–08 (mismo teal que PortadaFondoVerde) */
