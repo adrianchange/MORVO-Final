@@ -111,7 +111,6 @@ export function SlideShell({
           : root
       }
     >
-      <SlideIndex theme={theme} index={index} />
       {children}
     </div>
   );

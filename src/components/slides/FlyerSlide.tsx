@@ -1,6 +1,7 @@
 import type { PaletteTheme } from "../../theme/palettes";
 import { PETROLEO_PHOTOS, PETROLEO_SLIDE_BG } from "../../assets/petroleoPhotos";
 import { isHelechoStyle, isRaizPremium, slideText } from "../../theme/palettes";
+import { useIsMobile, useIsLandscape, useIsMobileUi } from "../../hooks/useIsMobile";
 import { CoverTitle } from "../CoverTitle";
 import { fontDisplay } from "./slideStyles";
 import { MediaFrame, SlideShell } from "./shared";
@@ -14,6 +15,12 @@ const FLYER_IMG = "https://images.unsplash.com/photo-1518504361720-82ccdc540022?
  * Sesgo izquierda/arriba — brazo derecho alzado visible en el lateral (igual que MORVO-Dossier).
  */
 const PETROLEO_FLYER_BACK_OBJECT_POSITION = "22% 8%";
+/**
+ * Móvil vertical: en pantallas altas el cover ya muestra toda la altura de la
+ * foto 2:3, así que objectPosition solo no cambia nada. Hace falta zoom anclado
+ * abajo para que en las bandas se vea la zona de las rodillas.
+ */
+const PETROLEO_FLYER_PORTRAIT_BACK_SCALE = 1.7;
 
 function PetroleoFlyerLayers({
   flyerImg,
@@ -22,6 +29,13 @@ function PetroleoFlyerLayers({
   flyerImg: string;
   flyerFrontImg: string;
 }) {
+  const mobile = useIsMobile();
+  const landscape = useIsLandscape();
+  const mobileUi = useIsMobileUi();
+  const portraitMobile = mobile && !landscape;
+  /** Teléfono en horizontal (detección ampliada) — evita corte del halo superior */
+  const phoneLandscape = mobileUi && landscape;
+
   return (
     <>
       <img
@@ -35,7 +49,17 @@ function PetroleoFlyerLayers({
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: PETROLEO_FLYER_BACK_OBJECT_POSITION,
+          objectPosition: portraitMobile
+            ? "50% 100%"
+            : phoneLandscape
+              ? "22% 28%"
+              : PETROLEO_FLYER_BACK_OBJECT_POSITION,
+          ...(portraitMobile
+            ? {
+                transform: `scale(${PETROLEO_FLYER_PORTRAIT_BACK_SCALE})`,
+                transformOrigin: "center bottom",
+              }
+            : null),
           pointerEvents: "none",
           userSelect: "none",
         }}
@@ -45,12 +69,19 @@ function PetroleoFlyerLayers({
         alt=""
         draggable={false}
         style={{
-          position: "relative",
+          position: "absolute",
+          /* Un poco de aire arriba en horizontal móvil para que no recorte el halo */
+          top: phoneLandscape ? 10 : 0,
+          right: 0,
+          bottom: phoneLandscape ? 10 : 0,
+          left: 0,
           zIndex: 1,
           width: "100%",
-          height: "100%",
+          height: phoneLandscape ? "calc(100% - 20px)" : "100%",
           objectFit: "contain",
-          objectPosition: "center",
+          objectPosition: phoneLandscape ? "center 55%" : "center",
+          transform: phoneLandscape ? "scale(0.92)" : undefined,
+          transformOrigin: "center center",
           pointerEvents: "none",
           userSelect: "none",
         }}

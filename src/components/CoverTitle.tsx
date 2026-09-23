@@ -9,7 +9,7 @@ import {
 import { motion } from "motion/react";
 import { isSelvaStyle, PALETTES, type PaletteId, type PaletteTheme } from "../theme/palettes";
 import { type CSSProperties, type ReactNode } from "react";
-import { useIsMobile } from "../hooks/useIsMobile";
+import { useIsMobile, useIsMobileUi } from "../hooks/useIsMobile";
 import { useCoverCreditTypography } from "../hooks/useCoverCreditTypography";
 import { ESMERALDA_TITLE_LETTER_GAP, fontDisplay, HELECHO_TITLE_FONT_SIZE, HELECHO_TITLE_STYLE, HELECHO_TITLE_SCALE_X, NIEBLA_TITLE_LETTER_GAP, NIEBLA_TITLE_SCALE_X, PETROLEO_TITLE_SCALE_X, PINO_TITLE_SCALE_X, SELVA_TITLE_SCALE_X } from "../theme/typography";
 import {
@@ -648,8 +648,16 @@ export function ObscenaTeatralHeader({
   /** Más presencia de color (portada Petróleo) */
   intensify?: boolean;
 }) {
+  const mobile = useIsMobileUi();
   const { textStyle, wrapStyle } = useCoverCreditTypography(color, {
     textAlign: "center",
+    ...(mobile
+      ? {
+          fontSize: "clamp(20px, 3.8vw, 34px)",
+          letterSpacing: "0.2em",
+          whiteSpace: "normal" as const,
+        }
+      : {}),
     ...(intensify
       ? {
           fontWeight: 600,
@@ -662,17 +670,42 @@ export function ObscenaTeatralHeader({
     <div
       style={{
         position: "absolute",
-        top: "clamp(20px, 4vh, 40px)",
-        left: 0,
-        right: 0,
+        top: mobile
+          ? "max(44px, calc(env(safe-area-inset-top, 0px) + 32px))"
+          : "clamp(20px, 4vh, 40px)",
+        left: 12,
+        right: 12,
         zIndex: 30,
         display: "flex",
         justifyContent: "center",
         ...wrapStyle,
+        ...(mobile ? { transform: "scaleX(0.94)", transformOrigin: "center center" } : {}),
         alignSelf: "unset",
       }}
     >
-      <p style={textStyle}>Compañía OBSCENA Teatral</p>
+      <p
+        style={{
+          ...textStyle,
+          ...(mobile
+            ? {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.15em",
+                lineHeight: 1.2,
+              }
+            : null),
+        }}
+      >
+        {mobile ? (
+          <>
+            <span>Compañía</span>
+            <span>OBSCENA Teatral</span>
+          </>
+        ) : (
+          "Compañía OBSCENA Teatral"
+        )}
+      </p>
     </div>
   );
 }

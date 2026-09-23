@@ -3,7 +3,7 @@ import type { PaletteTheme } from "../../theme/palettes";
 import { hasTeaserVideo, slideText } from "../../theme/palettes";
 import { fontBody, fontDisplay } from "./slideStyles";
 import { MediaFrame, SlideShell } from "./shared";
-import { useIsMobile } from "../../hooks/useIsMobile";
+import { useIsMobileUi, useIsLandscape } from "../../hooks/useIsMobile";
 import { TeaserVideo } from "../TeaserVideo";
 
 type Props = { theme: PaletteTheme };
@@ -121,11 +121,14 @@ function CreditsRow({
   text,
   compact = false,
   center = false,
+  /** Fila horizontal compacta (teléfono landscape) — evita cortar tras Contacto */
+  dense = false,
 }: {
   theme: PaletteTheme;
   text: string;
   compact?: boolean;
   center?: boolean;
+  dense?: boolean;
 }) {
   const elenco = (
     <span style={{ display: "flex", flexDirection: "column", gap: 2, lineHeight: 1.35 }}>
@@ -136,22 +139,22 @@ function CreditsRow({
   );
 
   const fotografiaYDosier = (
-    <div style={{ display: "flex", flexDirection: "column", gap: compact ? 14 : "clamp(14px, 1.8vh, 20px)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: dense || compact ? 8 : "clamp(14px, 1.8vh, 20px)" }}>
       <CreditBlock
         theme={theme}
         text={text}
         label="Fotografía"
-        value={<InstagramHandle text={text} handle="dancruz_" compact={compact} />}
-        compact={compact}
-        center={center}
+        value={<InstagramHandle text={text} handle="dancruz_" compact={compact || dense} />}
+        compact={compact || dense}
+        center={center && !dense}
       />
       <CreditBlock
         theme={theme}
         text={text}
         label="Dosier"
         value="Adrian Popovici"
-        compact={compact}
-        center={center}
+        compact={compact || dense}
+        center={center && !dense}
       />
     </div>
   );
@@ -161,18 +164,22 @@ function CreditsRow({
     {
       label: "Producción",
       value: (
-        <span style={{ whiteSpace: "nowrap" }}>Compañía OBSCENA TEATRAL</span>
+        <span style={{ whiteSpace: compact || dense ? "normal" : "nowrap" }}>
+          Compañía OBSCENA TEATRAL
+        </span>
       ),
     },
     {
       label: "Contacto",
-      value: <InstagramHandle text={text} handle="obscena.teatral" compact={compact} />,
+      value: (
+        <InstagramHandle text={text} handle="obscena.teatral" compact={compact || dense} />
+      ),
     },
     { label: "Elenco", value: elenco },
     { label: "Fotografía", value: null, custom: fotografiaYDosier },
   ];
 
-  if (compact || center) {
+  if ((compact || center) && !dense) {
     return (
       <div
         style={{
@@ -206,16 +213,19 @@ function CreditsRow({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns:
-          "minmax(0, 1.1fr) minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr)",
-        gap: "clamp(16px, 2vw, 28px)",
+        gridTemplateColumns: dense
+          ? "repeat(5, minmax(0, 1fr))"
+          : "minmax(0, 1.1fr) minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr)",
+        gap: dense ? 10 : "clamp(16px, 2vw, 28px)",
         width: "100%",
         alignItems: "start",
       }}
     >
       {items.map((item) =>
         item.custom ? (
-          <div key={item.label}>{item.custom}</div>
+          <div key={item.label} style={{ minWidth: 0 }}>
+            {item.custom}
+          </div>
         ) : (
           <CreditBlock
             key={item.label}
@@ -223,6 +233,7 @@ function CreditsRow({
             text={text}
             label={item.label}
             value={item.value}
+            compact={dense}
           />
         ),
       )}
@@ -232,14 +243,22 @@ function CreditsRow({
 
 function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
   return (
-    <SlideShell theme={theme} index="08" scrollable background={petroleoSlideBg(theme)}>
+    <SlideShell theme={theme} index="08" background={petroleoSlideBg(theme)}>
       <div
         style={{
-          padding: `48px ${MOBILE_TEASER_SIDE_INSET} 48px`,
+          position: "absolute",
+          inset: 0,
+          paddingTop: "max(48px, calc(env(safe-area-inset-top, 0px) + 32px))",
+          paddingRight: MOBILE_TEASER_SIDE_INSET,
+          paddingBottom: "max(36px, calc(env(safe-area-inset-bottom, 0px) + 24px))",
+          paddingLeft: MOBILE_TEASER_SIDE_INSET,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 28,
+          justifyContent: "flex-start",
+          gap: 14,
+          boxSizing: "border-box",
+          overflow: "hidden",
         }}
       >
         <h2
@@ -248,9 +267,11 @@ function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             textAlign: "center",
             fontFamily: fontDisplay(theme),
             fontWeight: 700,
-            fontSize: 22,
+            fontSize: 18,
             color: text,
             letterSpacing: "0.12em",
+            lineHeight: 1.25,
+            flexShrink: 0,
           }}
         >
           Teaser y Contacto
@@ -261,23 +282,45 @@ function MobileTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             font={fontDisplay(theme)}
             accentColor={slideText(theme)}
             paletteId={theme.id}
-            style={{ width: "100%", maxWidth: 560, aspectRatio: "16/9" }}
+            style={{
+              width: "100%",
+              maxWidth: 560,
+              aspectRatio: "16/9",
+              flexShrink: 1,
+              minHeight: 0,
+              maxHeight: "32vh",
+            }}
           />
         ) : (
           <MediaFrame
             theme={theme}
             label="[Vídeo teaser]"
-            style={{ width: "100%", maxWidth: 560, aspectRatio: "16/9" }}
+            style={{
+              width: "100%",
+              maxWidth: 560,
+              aspectRatio: "16/9",
+              maxHeight: "32vh",
+            }}
           />
         )}
 
-        <CreditsRow theme={theme} text={text} compact center />
+        <div style={{ width: "100%", flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}>
+          <CreditsRow theme={theme} text={text} compact center />
+        </div>
       </div>
     </SlideShell>
   );
 }
 
-function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
+function DesktopTeaser({
+  theme,
+  text,
+  phoneLandscape = false,
+}: {
+  theme: PaletteTheme;
+  text: string;
+  phoneLandscape?: boolean;
+}) {
   return (
     <SlideShell theme={theme} index="08" background={petroleoSlideBg(theme)}>
       <div
@@ -291,9 +334,13 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "clamp(18px, 2.4vh, 28px)",
-          paddingTop: "clamp(20px, 3vh, 32px)",
-          paddingBottom: "clamp(20px, 3vh, 32px)",
+          gap: phoneLandscape ? 10 : "clamp(18px, 2.4vh, 28px)",
+          paddingTop: phoneLandscape
+            ? "max(28px, calc(env(safe-area-inset-top, 0px) + 16px))"
+            : "clamp(20px, 3vh, 32px)",
+          paddingBottom: phoneLandscape
+            ? "max(16px, calc(env(safe-area-inset-bottom, 0px) + 10px))"
+            : "clamp(20px, 3vh, 32px)",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
@@ -305,9 +352,10 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             textAlign: "center",
             fontFamily: fontDisplay(theme),
             fontWeight: 700,
-            fontSize: "clamp(20px, 2.4vw, 32px)",
+            fontSize: phoneLandscape ? 16 : "clamp(20px, 2.4vw, 32px)",
             color: text,
             letterSpacing: "0.12em",
+            lineHeight: 1.2,
           }}
         >
           Teaser y Contacto
@@ -320,7 +368,7 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             paletteId={theme.id}
             style={{
               width: "min(100%, 920px)",
-              maxHeight: "min(52vh, 520px)",
+              maxHeight: phoneLandscape ? "min(36vh, 220px)" : "min(52vh, 520px)",
               aspectRatio: "16/9",
               flexShrink: 1,
               minHeight: 0,
@@ -332,14 +380,14 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
             label="[Vídeo teaser]"
             style={{
               width: "min(100%, 920px)",
-              maxHeight: "min(52vh, 520px)",
+              maxHeight: phoneLandscape ? "min(36vh, 220px)" : "min(52vh, 520px)",
               aspectRatio: "16/9",
             }}
           />
         )}
 
-        <div style={{ width: "100%", maxWidth: 1100, flexShrink: 0 }}>
-          <CreditsRow theme={theme} text={text} />
+        <div style={{ width: "100%", maxWidth: phoneLandscape ? 960 : 1100, flexShrink: 0, minWidth: 0 }}>
+          <CreditsRow theme={theme} text={text} dense={phoneLandscape} />
         </div>
       </div>
     </SlideShell>
@@ -348,9 +396,14 @@ function DesktopTeaser({ theme, text }: { theme: PaletteTheme; text: string }) {
 
 export function TeaserSlide({ theme }: Props) {
   const text = slideText(theme);
-  const mobile = useIsMobile();
+  const mobileUi = useIsMobileUi();
+  const landscape = useIsLandscape();
 
-  return mobile
-    ? <MobileTeaser theme={theme} text={text} />
-    : <DesktopTeaser theme={theme} text={text} />;
+  if (mobileUi && landscape) {
+    return <DesktopTeaser theme={theme} text={text} phoneLandscape />;
+  }
+  if (mobileUi) {
+    return <MobileTeaser theme={theme} text={text} />;
+  }
+  return <DesktopTeaser theme={theme} text={text} />;
 }
