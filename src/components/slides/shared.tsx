@@ -86,7 +86,7 @@ export function MediaFrame({
 
 export function SlideShell({
   theme,
-  index,
+  index: _index,
   children,
   scrollable = false,
   background,
