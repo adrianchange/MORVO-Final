@@ -2586,10 +2586,7 @@ export function TeaserVideo({ font, accentColor = SALMON, paletteId, onEnd, styl
               maxHeight: "100vh",
               aspectRatio: undefined,
             }
-          : {
-              width: "100%",
-              aspectRatio: "16/9",
-            }),
+          : null),
       }}
     >
       <video
