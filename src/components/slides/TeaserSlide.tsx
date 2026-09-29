@@ -191,6 +191,7 @@ function CreditsRow({
         label: "Fotografía",
         value: <InstagramHandle text={text} handle="dancruz_" compact />,
       },
+      { label: "Video", value: "Ciprian Gheorghe" },
       { label: "Dosier", value: "Adrian Popovici" },
     ];
     return (
@@ -224,88 +225,128 @@ function CreditsRow({
   }
 
   if (mode === "landscape") {
-    /* 2 columnas densas a la derecha — no se cortan */
+    /* Misma lógica que PC, compacta: col2 Producción+Contacto, col3 Foto+Video+Dosier */
     const elencoInline = ELENCO_LINES.join(" · ");
     return (
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-          columnGap: 12,
-          rowGap: 5,
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)",
+          columnGap: 10,
           width: "100%",
-          alignContent: "start",
           alignItems: "start",
           boxSizing: "border-box",
         }}
       >
-        <CreditBlock theme={theme} text={text} label="Texto y dirección" value="Naz Montés" dense />
-        <CreditBlock
-          theme={theme}
-          text={text}
-          label="Contacto"
-          value={<InstagramHandle text={text} handle="obscena.teatral" compact />}
-          dense
-        />
-        <CreditBlock
-          theme={theme}
-          text={text}
-          label="Producción"
-          value={<span style={{ whiteSpace: "normal" }}>Compañía OBSCENA TEATRAL</span>}
-          dense
-        />
-        <CreditBlock
-          theme={theme}
-          text={text}
-          label="Fotografía"
-          value={<InstagramHandle text={text} handle="dancruz_" compact />}
-          dense
-        />
-        <CreditBlock theme={theme} text={text} label="Elenco" value={elencoInline} dense />
-        <CreditBlock theme={theme} text={text} label="Dosier" value="Adrian Popovici" dense />
+        <div style={{ display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
+          <CreditBlock theme={theme} text={text} label="Texto y dirección" value="Naz Montés" dense />
+          <CreditBlock theme={theme} text={text} label="Elenco" value={elencoInline} dense />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
+          <CreditBlock
+            theme={theme}
+            text={text}
+            label="Producción"
+            value={<span style={{ whiteSpace: "normal" }}>Compañía OBSCENA TEATRAL</span>}
+            dense
+          />
+          <CreditBlock
+            theme={theme}
+            text={text}
+            label="Contacto"
+            value={<InstagramHandle text={text} handle="obscena.teatral" compact />}
+            dense
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
+          <CreditBlock
+            theme={theme}
+            text={text}
+            label="Fotografía"
+            value={<InstagramHandle text={text} handle="dancruz_" compact />}
+            dense
+          />
+          <CreditBlock theme={theme} text={text} label="Video" value="Ciprian Gheorghe" dense />
+          <CreditBlock theme={theme} text={text} label="Dosier" value="Adrian Popovici" dense />
+        </div>
       </div>
     );
   }
 
-  /* desktop: 3 columnas, misma anchura que el teaser */
+  /* desktop: 3 columnas
+   * 1) Texto y dirección + Elenco
+   * 2) Producción + Contacto
+   * 3) Fotografía + Video + Dosier
+   */
   return (
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
         columnGap: "clamp(20px, 2.4vw, 40px)",
-        rowGap: "clamp(12px, 1.5vh, 18px)",
         width: "100%",
         alignItems: "start",
       }}
     >
-      <CreditBlock theme={theme} text={text} label="Texto y dirección" value="Naz Montés" />
-      <CreditBlock
-        theme={theme}
-        text={text}
-        label="Producción"
-        value={<span style={{ whiteSpace: "normal" }}>Compañía OBSCENA TEATRAL</span>}
-      />
-      <CreditBlock
-        theme={theme}
-        text={text}
-        label="Contacto"
-        value={<InstagramHandle text={text} handle="obscena.teatral" />}
-      />
-      <CreditBlock theme={theme} text={text} label="Elenco" value={elenco} />
-      <CreditBlock
-        theme={theme}
-        text={text}
-        label="Fotografía"
-        value={<InstagramHandle text={text} handle="dancruz_" />}
-      />
-      <CreditBlock theme={theme} text={text} label="Dosier" value="Adrian Popovici" />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(12px, 1.5vh, 18px)",
+          minWidth: 0,
+        }}
+      >
+        <CreditBlock theme={theme} text={text} label="Texto y dirección" value="Naz Montés" />
+        <CreditBlock theme={theme} text={text} label="Elenco" value={elenco} />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(12px, 1.5vh, 18px)",
+          minWidth: 0,
+        }}
+      >
+        <CreditBlock
+          theme={theme}
+          text={text}
+          label="Producción"
+          value={<span style={{ whiteSpace: "normal" }}>Compañía OBSCENA TEATRAL</span>}
+        />
+        <CreditBlock
+          theme={theme}
+          text={text}
+          label="Contacto"
+          value={<InstagramHandle text={text} handle="obscena.teatral" />}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(12px, 1.5vh, 18px)",
+          minWidth: 0,
+        }}
+      >
+        <CreditBlock
+          theme={theme}
+          text={text}
+          label="Fotografía"
+          value={<InstagramHandle text={text} handle="dancruz_" />}
+        />
+        <CreditBlock theme={theme} text={text} label="Video" value="Ciprian Gheorghe" />
+        <CreditBlock theme={theme} text={text} label="Dosier" value="Adrian Popovici" />
+      </div>
     </div>
   );
 }
 
-/** PC: teaser + créditos misma banda (16:9 respecto a la altura útil) */
-const DESKTOP_BAND_W = "min(100%, 920px, calc(min(52vh, 520px) * 16 / 9))";
+/**
+ * PC embebido: ancho Vercel (920). Altura más baja;
+ * el MP4 va contain → no se recorta al reproducir.
+ */
+const DESKTOP_BAND_W = "min(100%, 920px)";
+const DESKTOP_TEASER_H = "min(42vh, 420px)";
 
 function teaserBoxStyle(mode: CreditsMode): CSSProperties {
   if (mode === "portrait") {
@@ -334,8 +375,8 @@ function teaserBoxStyle(mode: CreditsMode): CSSProperties {
   }
   return {
     width: "100%",
-    aspectRatio: "16 / 9",
-    height: "auto",
+    height: DESKTOP_TEASER_H,
+    maxHeight: DESKTOP_TEASER_H,
     flexShrink: 0,
     minWidth: 0,
     minHeight: 0,

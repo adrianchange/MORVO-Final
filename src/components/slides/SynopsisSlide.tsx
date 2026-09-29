@@ -6,7 +6,7 @@ import { fontBody, fontDisplay } from "./slideStyles";
 import { SlideShell } from "./shared";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
-const SYNOPSIS_TEXT = `Tres hombres viven atrapados por una vida automática, rutinaria y correcta. La anestesia, que en su día fue su salvación, ahora gira en sentido contrario y será su quiebra. En su visita «al bosque» descubrirán nuevas puertas donde la honestidad es más feroz que las mentiras sociales: deberán abrir los ojos, silenciar el miedo y escucharse de verdad. Experiencia teatral hipnótica sobre el colapso de las estructuras que nos enseñaron y la búsqueda de la honestidad fuera de las reglas —hasta descubrir, sin máscara, tu propio MORVO.`;
+const SYNOPSIS_TEXT = `Tres hombres viven atrapados por una vida automática, rutinaria y correcta. La anestesia, que en su día fue su salvación, ahora gira en sentido contrario y será su quiebra. En su visita «al bosque» descubrirán nuevas puertas donde la honestidad es más feroz que las mentiras sociales: deberán abrir los ojos, silenciar el miedo y escucharse de verdad. Experiencia teatral hipnótica sobre el colapso de las estructuras que nos enseñaron y la búsqueda de la honestidad fuera de las reglas —hasta descubrir, sin máscara, tu propio MORVO en un giro final que sacudirá todas las certezas del espectador.`;
 
 const FOREST_IMG = "https://picsum.photos/id/15/1600/900";
 
