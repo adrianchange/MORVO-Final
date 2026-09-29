@@ -1,97 +1,92 @@
-# MORVO — Dossier digital interactivo
+# MORVO-Final — Dossier institucional (Petróleo)
 
-> Dossier web interactivo para la producción teatral **MORVO** (*Compañía OBSCENA Teatral*).  
-> React · TypeScript · Vite · Motion · Sistema multi-paleta de identidad visual.
+> Dossier web de entrega para la producción teatral **MORVO** (*Compañía OBSCENA Teatral*), fijado en la identidad **Raíz Petróleo**.  
+> React · TypeScript · Vite · Motion · Teaser audiovisual definitivo.
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Demo](https://img.shields.io/badge/Demo-morvo--final.vercel.app-black?logo=vercel)](https://morvo-final.vercel.app)
+
+**Demo en vivo:** [https://morvo-final.vercel.app](https://morvo-final.vercel.app)
+
+> **Laboratorio multi-paleta** (exploración previa): [Morvo](https://github.com/adrianchange/Morvo)
 
 ---
 
-## Descripción
+## Qué es este repo
 
-**MORVO** es un dossier digital de presentación para una obra de teatro, concebido como aplicación web de una sola página (SPA). Permite a salas, festivales y equipos de producción recorrer la información esencial de la pieza — portada, sinopsis, elenco, directora y teaser — en un formato visual cuidado y navegable.
+**MORVO-Final** es la **versión de presentación** del dossier: la que se muestra a salas, festivales y equipos de producción.
 
-El proyecto incluye un **sistema de identidad visual modular** con **11 paletas cromáticas** intercambiables:
+Abre directamente el dossier en **Raíz Petróleo** (sin selector de colores). Incluye el **teaser definitivo** en MP4 (`Teaser_v18`, 16:9) integrado en la última slide, con créditos de vídeo y layout pensado para escritorio y móvil.
 
-- **Una paleta principal** seleccionada para el dossier institucional.
-- **Diez variantes adicionales** orientadas a **publicidad en redes sociales**, flyers y exploración gráfica de la línea visual de la obra, sin duplicar la estructura de contenido.
+El trabajo de exploración cromática vive en [Morvo](https://github.com/adrianchange/Morvo); este repositorio concentra el resultado listo para enseñar.
 
 ---
 
-## Stack tecnológico
+## Stack
 
 | Capa | Tecnología |
 |------|------------|
 | Frontend | **React 19** + **TypeScript 6** |
 | Build | **Vite 8** |
-| Animación | **Motion** (API compatible con Framer Motion) |
-| Tipografía | Google Fonts + fuente custom **Killing Eve** (réplica tipográfica de la serie) |
-| Despliegue | Build estático (`dist/`) — GitHub Pages, Netlify, Vercel… |
+| Animación | **Motion** |
+| Tipografía | **Cinzel** + Google Fonts + **Killing Eve** |
+| Despliegue | **Vercel** (build estático) |
 
-Sin backend: contenido embebido en componentes, navegación 100 % cliente.
-
----
-
-## Funcionalidades
-
-- **Selector de paletas** con previsualización animada del logotipo MORVO.
-- **Dossier de 8 slides**: portada, imagen promocional, sinopsis, tres fichas de personaje, directora y teaser audiovisual con contacto.
-- **Navegación accesible**: teclado (← →, espacio, Escape), swipe táctil en móvil, indicadores de progreso y controles laterales.
-- **Viewport escénico 16:9** en escritorio; pantalla completa en móvil.
-- Servidor de desarrollo accesible en red local (`host: true`) para pruebas en dispositivos reales.
+Sin backend: SPA 100 % cliente.
 
 ---
 
-## Sistema de diseño multi-paleta
+## Contenido del dossier (8 slides)
 
-Arquitectura de temas centralizada en `src/theme/`:
+1. Portada animada (identidad Petróleo)  
+2. Imagen promocional / flyer  
+3. Sinopsis  
+4–6. Fichas de personaje (Mario, Cristian, Víctor)  
+7. Directora (Naz Montés)  
+8. **Teaser** (`Teaser_v18.mp4`) + créditos y contacto  
 
-| Archivo | Responsabilidad |
-|---------|-----------------|
-| `palettes.ts` | 11 identidades visuales con tokens (`greenDark`, `accent`, `bg`, `text`, `titleLetters`, `titleV`…) |
-| `typography.ts` | Familias tipográficas, escalas del título MORVO, constantes de composición |
-| `swap.ts` | Paleta cromática compartida y utilidades de transición |
-
-### Paletas originales (concepto dramático)
-
-Litúrgico · Hospital · Podredumbre · Invertida · Mezcla
-
-### Serie Raíz (identidad Killing Eve / difusión)
-
-Selva · Pino · Petróleo · Helecho · Niebla · Esmeralda
-
-Cada paleta altera fondo, tipografía, créditos de portada y animaciones del título sin reescribir el dossier.
+Navegación por teclado (← →, espacio), swipe táctil e indicadores de progreso. Viewport escénico **16:9** en PC; pantalla completa en móvil.
 
 ---
 
-## Animaciones de marca (portada)
+## Identidad Raíz Petróleo
 
-El componente `CoverTitle.tsx` actúa como motor gráfico del título **MORVO**:
+Paleta institucional seleccionada tras el laboratorio:
 
-- Glifo **V** como **SVG vectorial** extraído de `KillingEve.ttf`, con métricas tipográficas reales (`advance`, junta interior, punta exterior).
-- **Variantes de chorreo animado** por paleta: clásico Helecho, lágrima Niebla, gota Pino, gota Selva (formación en junta → hilo → caída → impacto).
-- Créditos sincronizados con la animación (*Naz Montés*, *Compañía OBSCENA Teatral*).
-- Camuflaje cromático de la gota dentro del contorno de la V; cambio de color al impacto.
-- Composición responsive (breakpoint 768 px) con calibración fina de posicionamiento en móvil y escritorio.
+- Fondo oscuro, tipografía de portada en línea Cinzel.
+- Acento salmón / esmeralda en título y UI.
+- Teaser con portada «COMPAÑÍA / PRESENTA», montaje audiovisual y créditos (incl. vídeo).
+- Composición responsive: en landscape, teaser + créditos en dos columnas; en portrait, flujo vertical.
+
+El sistema de temas (`src/theme/`) sigue presente por arquitectura compartida con el laboratorio, pero la app **bloquea** `raiz_petroleo` en `App.tsx`.
 
 ---
 
-## Estructura del proyecto
+## Destacados técnicos
+
+- Integración de vídeo de teaser a pantalla completa dentro del marco del dossier (`TeaserFileVideo`).
+- Shell de presentación tipo producto desplegado (contenedor ~920 px en escritorio, sin recortar el 16:9).
+- Modos de grabación auxiliares (`?record=petroleo`, `?record=v09-credits`) para exportar piezas sueltas.
+- Animación del título MORVO con glifo **V** vectorial (fuente Killing Eve).
+
+---
+
+## Estructura
 
 ```
 src/
-├── App.tsx                 # Stage 16:9 + enrutado paleta → dossier
+├── App.tsx                      # Dossier fijo → raiz_petroleo
+├── assets/teaserFile.ts         # URL del Teaser_v18.mp4
 ├── components/
-│   ├── VColorPicker.tsx    # Selector de identidad visual
-│   ├── CoverTitle.tsx      # Título MORVO + animaciones V
-│   ├── Dossier.tsx         # Orquestación de slides y navegación
-│   ├── TeaserVideo.tsx     # Montaje audiovisual del teaser
-│   ├── helechoVGlyph.ts    # Datos del glifo V (Killing Eve)
-│   └── slides/             # Portada, sinopsis, personajes, flyer, teaser…
-├── theme/                  # Paletas, tipografía, tokens de color
-└── hooks/useIsMobile.ts    # Breakpoint responsive
+│   ├── CoverTitle.tsx           # Título MORVO + V animada
+│   ├── Dossier.tsx              # Orquestación de slides
+│   ├── TeaserFileVideo.tsx      # Reproductor del teaser final
+│   ├── TeaserVideo.tsx          # Motor de montaje (legado / record)
+│   └── slides/                  # Portada, sinopsis, elenco, teaser…
+├── theme/                       # Tokens (paleta activa: Petróleo)
+└── hooks/
 ```
 
 ---
@@ -100,30 +95,33 @@ src/
 
 ```bash
 npm install
-npm run dev      # desarrollo (localhost + LAN)
-npm run build    # TypeScript + bundle de producción
-npm run preview  # vista previa del build
+npm run dev
+npm run build
+npm run preview
 ```
 
-Abre la URL que muestra la terminal (normalmente `http://localhost:5173`). En móvil, usa la IP de red local del equipo (p. ej. `http://192.168.x.x:5173`).
+Abre la URL de Vite (normalmente `http://localhost:5173`). En móvil de la misma red: `http://192.168.x.x:5173`.
 
 ### Uso
 
-1. Elige una **paleta** en el selector inicial.
-2. Navega el dossier con **← →** o **espacio**, clic en los lados o swipe en móvil.
-3. **Escape** o «cambiar paleta» vuelve al selector.
+1. Entras directo al dossier Petróleo (sin selector).
+2. Navega con **← →** / **espacio**, clic o swipe.
+3. En la última slide, reproduce el teaser y consulta créditos / contacto.
 
 ---
 
-## Exportación PDF
+## Relación con Morvo
 
-El PDF para teatros se genera aparte (captura de pantalla o «Imprimir → PDF» del navegador). Las animaciones viven en la versión web.
+| | **MORVO-Final** (este repo) | **Morvo** |
+|--|----------------------------|-----------|
+| Rol | Entrega para teatros | Laboratorio visual |
+| Paleta | Fija: Raíz Petróleo | 13 identidades |
+| Teaser | MP4 `Teaser_v18` | Montaje interactivo por tema |
+| Demo | [morvo-final.vercel.app](https://morvo-final.vercel.app) | — |
 
 ---
 
-## Documentación adicional
-
-Versiones del proyecto adaptadas a distintos contextos profesionales:
+## Documentación
 
 - [Ficha de portfolio](docs/portfolio.md)
 - [CV académico](docs/cv-academico.md)
@@ -139,4 +137,4 @@ La fuente **Killing Eve** es freeware con condiciones de uso comercial — ver `
 
 ## Tags
 
-`react` · `typescript` · `vite` · `motion` · `svg-animation` · `design-system` · `theater` · `interactive-dossier` · `branding` · `responsive-design` · `spa`
+`react` · `typescript` · `vite` · `motion` · `theater` · `interactive-dossier` · `video` · `vercel` · `spa` · `branding`
